@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Open Cart Test Regression PW Suite" thread-count="1"
+	parallel="tests" verbose="4">
+	<listeners>
+		<listener
+			class-name="com.qa.opencart.listeners.ExtentReportListener" />
+		<listener
+			class-name="com.qa.opencart.selfhealing.SelfHealingListener" />
+	</listeners>
+	<test name="Open Cart Home Page Test">
+		<classes>
+			<class name="com.qa.opencart.tests.HomePageTest" />
+		</classes>
+	</test>
+	<test name="Open Cart Login Page Test">
+		<classes>
+			<class name="com.qa.opencart.tests.LoginPageTest" />
+		</classes>
+	</test>
+</suite>

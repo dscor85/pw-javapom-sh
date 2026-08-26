@@ -1,0 +1,25 @@
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Maven
+target/
+
+# TestNG Reports
+test-output/
+extent-reports/
+
+# Screenshots
+screenshot/
+
+# Auth state files
+auth.json
+storageState.json
+
+# Local credentials
+src/test/resources/config/credentials.properties
+
+# OS files
+.DS_Store
+Thumbs.db
