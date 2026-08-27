@@ -3,7 +3,8 @@ package com.qa.opencart.selfhealing;
 import java.nio.file.Files;
 import java.util.List;
 
-import org.testng.ITestContext;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
@@ -15,11 +16,14 @@ import org.testng.ITestResult;
  *
  * Responsibilities:
  *   - Tags HealingTestContext with the current test method name, so HealingEngine can put it
- *     in each report row without page objects needing to pass it around.
- *   - After the ENTIRE TestNG run finishes, reads healing-attempts.json (written during the
- *     run by HealingAttemptLog) and renders self-healing-reports/SelfHealingReport.html.
+ *     in each report row without page objects needing to pass it around (ITestListener).
+ *   - After the ENTIRE TestNG suite finishes -- not each <test> block within it -- reads
+ *     healing-attempts.json (written during the run by HealingAttemptLog) and renders
+ *     self-healing-reports/SelfHealingReport.html (ISuiteListener.onFinish(ISuite), which
+ *     fires exactly once per <suite>, unlike ITestListener.onFinish(ITestContext) which
+ *     would fire once per <test> block).
  */
-public class SelfHealingListener implements ITestListener {
+public class SelfHealingListener implements ITestListener, ISuiteListener {
 
 	@Override
 	public void onTestStart(ITestResult result) {
@@ -42,7 +46,7 @@ public class SelfHealingListener implements ITestListener {
 	}
 
 	@Override
-	public void onFinish(ITestContext context) {
+	public void onFinish(ISuite suite) {
 		generateReport();
 	}
 

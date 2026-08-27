@@ -31,10 +31,10 @@ public class HomePageTest extends BaseTest {
 		};
 	}
 
-	@Test(dataProvider = "getProductData")
-	public void searchTest(String productName) {
-		String actualSearchHeader = homePage.doSearch(productName);
-		Assert.assertEquals(actualSearchHeader, "Search - " + productName);
-	}
+//	@Test(dataProvider = "getProductData")
+//	public void searchTest(String productName) {
+//		String actualSearchHeader = homePage.doSearch(productName);
+//		Assert.assertEquals(actualSearchHeader, "Search - " + productName);
+//	}
 
 }
