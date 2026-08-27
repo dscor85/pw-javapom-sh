@@ -1,0 +1,85 @@
+name: Playwright Java Tests
+
+on:
+  workflow_dispatch:
+     inputs:
+      role:
+        description: 'Role'
+        required: true
+        default: 'admin'
+        type: choice
+        options:
+          - admin
+          - editor
+          - user
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Maven Packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
+
+      - name: Install Playwright Browsers
+        run: mvn exec:java -e
+        continue-on-error: true
+
+      - name: Download Maven Dependencies
+        run: mvn dependency:resolve
+
+      - name: Install Playwright Browser Dependencies
+        run: |
+          mvn exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps"
+
+      - name: Run TestNG Suite
+        env:
+          OPENCART_USERNAME: ${{ secrets.OPENCART_USERNAME }}
+          OPENCART_PASSWORD: ${{ secrets.OPENCART_PASSWORD }}
+          
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+
+          EDITOR_USERNAME: ${{ secrets.EDITOR_USERNAME }}
+          EDITOR_PASSWORD: ${{ secrets.EDITOR_PASSWORD }}
+        
+          USER_USERNAME: ${{ secrets.USER_USERNAME }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          
+        run: |
+          mvn test \
+          -Drole=${{ github.event.inputs.role }} \
+          -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regressions.xml
+
+      - name: Upload TestNG Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-report
+          path: |
+            test-output/**
+            build/**
+            screenshot/**
+            
+      - name: Upload Extent Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extent-reports
+          path: extent-reports      
