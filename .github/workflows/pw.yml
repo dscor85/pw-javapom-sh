@@ -82,4 +82,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: extent-reports
-          path: extent-reports      
+          path: extent-reports    
+
+      - name: Upload Healing Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: self-healing-reports
+          path: self-healing-reports      
