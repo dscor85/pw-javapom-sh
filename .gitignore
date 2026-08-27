@@ -9,7 +9,6 @@ target/
 # TestNG Reports
 test-output/
 extent-reports/
-self-healing-reports/
 
 # Screenshots
 screenshot/

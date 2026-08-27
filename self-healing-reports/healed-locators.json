@@ -1,0 +1,11 @@
+{
+  "login.emailId" : {
+    "elementKey" : "login.emailId",
+    "originalLocator" : "//input[@id='input-email-BROKEN']",
+    "locatorType" : "XPATH",
+    "locatorValue" : "//input[@id='input-email']",
+    "confidence" : 95.0,
+    "aiProvider" : "openai-compatible (openai/gpt-oss-120b)",
+    "healedAt" : "2026-08-27T02:01:03.363255300Z"
+  }
+}
