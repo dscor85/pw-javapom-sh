@@ -16,10 +16,13 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import static com.qa.opencart.factory.PlaywrightFactory.takeScreenshot;
+import com.microsoft.playwright.Tracing;
+import com.qa.opencart.factory.PlaywrightFactory;
 
 public class ExtentReportListener implements ITestListener {
 
 	private static final String OUTPUT_FOLDER = "./extent-reports/";
+	private static final String TRACE_FOLDER = "./traces/";
 	private static final String FILE_NAME = "TestExecutionReport.html";
 
 	private static ExtentReports extent = init();
@@ -38,6 +41,15 @@ public class ExtentReportListener implements ITestListener {
 				// fail to create directory
 				e.printStackTrace();
 			}
+		}
+		
+		Path tracePath = Paths.get(TRACE_FOLDER);
+		if (!Files.exists(tracePath)) {
+		    try {
+		        Files.createDirectories(tracePath);
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
 		}
 		
 		extentReports = new ExtentReports();
@@ -88,6 +100,7 @@ public class ExtentReportListener implements ITestListener {
 		extentTest.assignCategory(className);
 		test.set(extentTest);
 		test.get().getModel().setStartTime(getTime(result.getStartMillis()));
+		PlaywrightFactory.getBrowserContext().tracing().startChunk();
 	}
 
 	public synchronized void onTestSuccess(ITestResult result) {
@@ -95,18 +108,26 @@ public class ExtentReportListener implements ITestListener {
 		test.get().pass("Test passed");
 		test.get().pass(result.getThrowable(), MediaEntityBuilder.createScreenCaptureFromBase64String(takeScreenshot(),result.getMethod().getMethodName()).build());
 		test.get().getModel().setEndTime(getTime(result.getEndMillis()));
+		
+		PlaywrightFactory.getBrowserContext().tracing().stopChunk(); // no path → chunk discarded
 	}
 
 	public synchronized void onTestFailure(ITestResult result) {
 		System.out.println((result.getMethod().getMethodName() + " failed!"));
 		test.get().fail(result.getThrowable(), MediaEntityBuilder.createScreenCaptureFromBase64String(takeScreenshot(),result.getMethod().getMethodName()).build());
 		test.get().getModel().setEndTime(getTime(result.getEndMillis()));
+		
+		String tracePath = TRACE_FOLDER + result.getMethod().getMethodName() + "_" + result.getEndMillis() + ".zip";
+		PlaywrightFactory.getBrowserContext().tracing().stopChunk(
+		        new Tracing.StopChunkOptions().setPath(Paths.get(tracePath)));
+		System.out.println("[TRACE] Saved failure trace: " + tracePath);
 	}
 
 	public synchronized void onTestSkipped(ITestResult result) {
 		System.out.println((result.getMethod().getMethodName() + " skipped!"));
 		test.get().skip(result.getThrowable(), MediaEntityBuilder.createScreenCaptureFromBase64String(takeScreenshot(), result.getMethod().getMethodName()).build());
 		test.get().getModel().setEndTime(getTime(result.getEndMillis()));
+		PlaywrightFactory.getBrowserContext().tracing().stopChunk(); // no path → chunk discarded
 	}
 
 	public synchronized void onTestFailedButWithinSuccessPercentage(ITestResult result) {

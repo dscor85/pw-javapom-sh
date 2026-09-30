@@ -12,6 +12,7 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.Tracing;
 
 public class PlaywrightFactory {
 
@@ -78,6 +79,13 @@ public class PlaywrightFactory {
 //		page.navigate(prop.getProperty("url").trim());
 //		return page;
 		tlBrowserContext.set(getBrowser().newContext());
+		
+		// begin trace recording for this context; per-test chunks are captured/discarded
+		// in ExtentReportListener depending on pass/fail
+		getBrowserContext().tracing().start(new Tracing.StartOptions()
+		        .setScreenshots(true)
+		        .setSnapshots(true)
+		        .setSources(true));
 		
 		tlPage.set(getBrowserContext().newPage());
 		//for CI

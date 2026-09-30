@@ -6,6 +6,6 @@
     "locatorValue" : "//input[@id='input-email']",
     "confidence" : 95.0,
     "aiProvider" : "openai-compatible (openai/gpt-oss-120b)",
-    "healedAt" : "2026-08-27T02:01:03.363255300Z"
+    "healedAt" : "2026-08-28T01:14:57.327001300Z"
   }
 }

@@ -29,6 +29,7 @@ public class BaseTest {
 
 	@AfterTest
 	public void tearDown() {
+		page.context().tracing().stop();   // ends the recording started in initBrowser()
 		page.context().browser().close();
 	}
 
