@@ -100,4 +100,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: self-healing-reports
-          path: self-healing-reports      
+          path: self-healing-reports
+
+      - name: Upload Trace Files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: traces    
