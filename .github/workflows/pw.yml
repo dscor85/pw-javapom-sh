@@ -21,6 +21,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Probe target site reachability
+        run: |
+          echo "=== DNS resolution ==="
+          getent hosts naveenautomationlabs.com || nslookup naveenautomationlabs.com || true
+          echo ""
+          echo "=== HTTP probe (with timing) ==="
+          curl -o /dev/null -s -w "HTTP Status: %{http_code}\nDNS lookup: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS handshake: %{time_appconnect}s\nTotal time: %{time_total}s\n" \
+            --max-time 30 \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            https://naveenautomationlabs.com/opencart/ || echo "curl failed or timed out"  
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
