@@ -11,7 +11,8 @@ public class LoginPage {
 //	private String emailId = "//input[@id='input-email']";
 	private String emailId = "//input[@id='input-email-BROKEN']";
 	private String password = "//input[@id='input-password']";
-	private String loginBtn = "//input[@value='Login']";
+//	private String loginBtn = "//input[@value='Login']";
+	private String loginBtn = "//input[@value='Login-BROKEN']";
 	private String forgotPwdLink = "//div[@class='form-group']//a[normalize-space()='Forgotten Password']";
 	private String logoutLink = "//a[@class='list-group-item'][normalize-space()='Logout']";
 
