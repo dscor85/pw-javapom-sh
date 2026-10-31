@@ -76,6 +76,7 @@ jobs:
         run: |
           mvn test \
           -Drole=${{ github.event.inputs.role }} \
+          -Dfailure.analysis=true \
           -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regressions.xml
 
       - name: Upload TestNG Reports
