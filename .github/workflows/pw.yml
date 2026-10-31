@@ -76,6 +76,7 @@ jobs:
         run: |
           mvn test \
           -Drole=${{ github.event.inputs.role }} \
+          -Dfailure.analysis=true \
           -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regressions.xml
 
       - name: Upload TestNG Reports
@@ -100,4 +101,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: self-healing-reports
-          path: self-healing-reports      
+          path: self-healing-reports
+
+      - name: Upload Trace Files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: traces    
