@@ -8,8 +8,8 @@ public class LoginPage {
 	private Page page;
 	private HealingPage healingPage;
 
-//	private String emailId = "//input[@id='input-email']";
-	private String emailId = "//input[@id='input-email-BROKEN']";
+	private String emailId = "//input[@id='input-email']";
+//	private String emailId = "//input[@id='input-email-BROKEN']";
 	private String password = "//input[@id='input-password']";
 	private String loginBtn = "//input[@value='Login']";
 	private String forgotPwdLink = "//div[@class='form-group']//a[normalize-space()='Forgotten Password']";
@@ -38,6 +38,7 @@ public class LoginPage {
 		healingPage.click("login.loginBtn", loginBtn);
 
 		if (healingPage.isVisible("login.logoutLink", logoutLink)) {
+
 			System.out.println("user logged in successfully.");
 			return true;
 		}

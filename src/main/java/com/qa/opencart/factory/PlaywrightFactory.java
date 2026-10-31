@@ -26,7 +26,8 @@ public class PlaywrightFactory {
 	private static ThreadLocal<BrowserContext> tlBrowserContext = new ThreadLocal<>();
 	private static ThreadLocal<Page> tlPage = new ThreadLocal<>();
 	private static ThreadLocal<Playwright> tlPlaywright = new ThreadLocal<>();
-
+	private static final int DEFAULT_TIMEOUT_MS = 120_000;
+	
 	public static Playwright getPlaywright() {
 		return tlPlaywright.get();
 	}
@@ -44,7 +45,8 @@ public class PlaywrightFactory {
 	}
 
 	public Page initBrowser(Properties prop) {
-
+		
+		int timeout = Integer.parseInt(prop.getProperty("timeout.ms", String.valueOf(DEFAULT_TIMEOUT_MS)).trim());
 		String browserName = prop.getProperty("browser").trim();
 		System.out.println("browser name is: " + browserName);
 
@@ -80,6 +82,11 @@ public class PlaywrightFactory {
 //		return page;
 		tlBrowserContext.set(getBrowser().newContext());
 		
+		//added for timeout increase // can be dleeted
+		// applies to all pages in this context, including popups/new tabs
+	    getBrowserContext().setDefaultTimeout(timeout);
+	    getBrowserContext().setDefaultNavigationTimeout(timeout);
+		
 		// begin trace recording for this context; per-test chunks are captured/discarded
 		// in ExtentReportListener depending on pass/fail
 		getBrowserContext().tracing().start(new Tracing.StartOptions()
@@ -89,8 +96,8 @@ public class PlaywrightFactory {
 		
 		tlPage.set(getBrowserContext().newPage());
 		//for CI
-		getPage().setDefaultTimeout(60000);
-		getPage().setDefaultNavigationTimeout(60000);
+		getPage().setDefaultTimeout(120000);
+		getPage().setDefaultNavigationTimeout(120000);
 		
 //		getPage().navigate(prop.getProperty("url").trim());
 		
